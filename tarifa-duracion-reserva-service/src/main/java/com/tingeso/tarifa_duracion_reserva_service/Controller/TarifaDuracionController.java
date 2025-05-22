@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/tarifas")
+@RequestMapping("/api/tarifas")
 public class TarifaDuracionController {
 
     @Autowired
@@ -20,7 +20,7 @@ public class TarifaDuracionController {
         return service.obtenerTodas();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById/{id}")
     public Optional<TarifaDuracion> obtenerPorId(@PathVariable int id) {
         return service.obtenerPorId(id);
     }
@@ -30,7 +30,7 @@ public class TarifaDuracionController {
         return service.guardar(tarifaDuracion);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public TarifaDuracion actualizar(@PathVariable int id, @RequestBody TarifaDuracion nuevaTarifa) {
         Optional<TarifaDuracion> actual = service.obtenerPorId(id);
         if (actual.isPresent()) {

@@ -17,7 +17,7 @@ public class DescuentoPorPersonas {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private int numVueltas_TiempoMax; //número de vueltas o tiempo maximo (ej: 10 vueltas/15 minutos)
-    private double tarifa; //precio base
-    private int duracion_total;
+    private int minPersonas;
+    private int maxPersonas;
+    private double descuento;
 }
