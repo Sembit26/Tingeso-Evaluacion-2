@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/tarifas")
+@RequestMapping("/api/tarifasDuracion")
 public class TarifaDuracionController {
 
     @Autowired
@@ -35,7 +35,7 @@ public class TarifaDuracionController {
         Optional<TarifaDuracion> actual = service.obtenerPorId(id);
         if (actual.isPresent()) {
             TarifaDuracion td = actual.get();
-            td.setNumVueltas_TiempoMax(nuevaTarifa.getNumVueltas_TiempoMax());
+            td.setNumVueltasTiempoMax(nuevaTarifa.getNumVueltasTiempoMax());
             td.setTarifa(nuevaTarifa.getTarifa());
             td.setDuracion_total(nuevaTarifa.getDuracion_total());
             return service.guardar(td);
@@ -47,5 +47,10 @@ public class TarifaDuracionController {
     @DeleteMapping("/delete/{id}")
     public void eliminar(@PathVariable int id) {
         service.eliminar(id);
+    }
+
+    @GetMapping("/buscarPorVueltas")
+    public TarifaDuracion buscarPorVueltas(@RequestParam int numVueltas) {
+        return service.buscarPorNumVueltas(numVueltas);
     }
 }

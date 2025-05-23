@@ -29,4 +29,9 @@ public class TarifaDuracionService {
     public void eliminar(int id) {
         repository.deleteById(id);
     }
+
+    public TarifaDuracion buscarPorNumVueltas(int numVueltas) {
+        return repository.findByNumVueltasTiempoMax(numVueltas);
+    }
+
 }
