@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: descuento-por-cliente-frecuente
+
+  cloud:
+    config:
+      enabled: true # cámbialo a true si usas Config Server
+      uri: http://localhost:8081 # solo si usas Spring Cloud Config
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bdmicroservicios
+    username: postgres
+    password: holamundo
+
+  jpa:
+    hibernate:
+      ddl-auto: update

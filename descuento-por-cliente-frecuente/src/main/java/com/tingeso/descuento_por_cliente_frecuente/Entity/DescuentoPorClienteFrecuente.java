@@ -3,7 +3,7 @@ package com.tingeso.descuento_por_cliente_frecuente.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 @Data
