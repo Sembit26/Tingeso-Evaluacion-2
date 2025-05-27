@@ -1,11 +1,14 @@
+server:
+  port: 0  # 🔥 Puerto dinámico
+
 spring:
   application:
     name: descuento-por-cliente-frecuente
 
   cloud:
     config:
-      enabled: true # cámbialo a true si usas Config Server
-      uri: http://localhost:8081 # solo si usas Spring Cloud Config
+      enabled: true
+      uri: http://localhost:8081
 
   datasource:
     url: jdbc:postgresql://localhost:5432/bdmicroservicios
