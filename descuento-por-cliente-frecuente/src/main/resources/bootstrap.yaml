@@ -1,5 +1,5 @@
 server:
-  port: 0  # 🔥 Puerto dinámico
+  port: 8001
 
 spring:
   application:

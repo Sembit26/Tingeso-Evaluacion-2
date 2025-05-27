@@ -6,7 +6,7 @@ spring:
       server:
         git:
           default-label: main
-          uri: https://github.com/Sembit26/Tingeso-Evaluacion-2.git
+          uri: https://github.com/Sembit26/Tingeso-Evaluacion-2
           search-paths: config-data
   application:
     name: config-service
