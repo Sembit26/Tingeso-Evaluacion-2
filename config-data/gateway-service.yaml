@@ -29,7 +29,7 @@ spring:
           uri: lb://tarifa-duracion-reserva-service
           predicates:
             - Path=/api/tarifasDuracion/**
-        - id: tarifas-dias-especiales
-          uri: lb://tarifas-dias-especiales
+        - id: tarifa-dias-especiales
+          uri: lb://tarifa-dias-especiales
           predicates:
             - Path=/api/tarifasDiasEspeciales/**
