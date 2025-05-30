@@ -3,7 +3,7 @@ package com.tingeso.tarifa_duracion_reserva_service.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 @Data

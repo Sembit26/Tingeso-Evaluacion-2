@@ -25,3 +25,7 @@ spring:
           uri: lb://descuento-por-personas-service
           predicates:
             - Path=/api/descuentoPorNumPersonas/**
+        - id: tarifa-duracion-reserva-service
+          uri: lb://tarifa-duracion-reserva-service
+          predicates:
+            - Path=/api/tarifasDuracion/**
