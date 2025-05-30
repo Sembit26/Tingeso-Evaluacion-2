@@ -33,3 +33,7 @@ spring:
           uri: lb://tarifa-dias-especiales
           predicates:
             - Path=/api/tarifasDiasEspeciales/**
+        - id: reserva-service
+          uri: lb://reserva-service
+          predicates:
+            - Path=/api/reservas/**

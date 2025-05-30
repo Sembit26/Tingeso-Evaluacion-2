@@ -47,7 +47,7 @@ public class ReservaService {
     public double crearReserva(int numVueltas_TiempoMaximo){
         Reserva reserva = new Reserva();
         //reserva.setIdUsuario(idUsuario);
-        TarifaDuracion tarifaDuracion = restTemplate.getForObject("http://localhost:8001/api/tarifasDuracion/buscarPorVueltas?numVueltas=" + numVueltas_TiempoMaximo, TarifaDuracion.class);
+        TarifaDuracion tarifaDuracion = restTemplate.getForObject("http://api/tarifasDuracion/buscarPorVueltas?numVueltas=" + numVueltas_TiempoMaximo, TarifaDuracion.class);
         double tarifa = tarifaDuracion.getTarifa();
         return tarifa;
     }

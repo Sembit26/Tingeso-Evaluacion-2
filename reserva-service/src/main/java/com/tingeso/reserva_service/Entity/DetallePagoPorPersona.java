@@ -1,7 +1,7 @@
 package com.tingeso.reserva_service.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 
