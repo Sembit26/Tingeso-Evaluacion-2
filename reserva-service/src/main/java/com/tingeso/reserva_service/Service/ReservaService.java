@@ -44,11 +44,8 @@ public class ReservaService {
         reservaRepository.deleteById(id);
     }
 
-    public double crearReserva(int numVueltas_TiempoMaximo){
-        Reserva reserva = new Reserva();
-        //reserva.setIdUsuario(idUsuario);
+    public TarifaDuracion obtenerTarifaNormal(int numVueltas_TiempoMaximo){
         TarifaDuracion tarifaDuracion = restTemplate.getForObject("http://tarifa-duracion-reserva-service/api/tarifasDuracion/buscarPorVueltas?numVueltas=" + numVueltas_TiempoMaximo, TarifaDuracion.class);
-        double tarifa = tarifaDuracion.getTarifa();
-        return tarifa;
+        return tarifaDuracion;
     }
 }

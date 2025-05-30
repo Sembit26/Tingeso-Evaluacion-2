@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TarifaDuracion {
+    private int id;
     private int numVueltasTiempoMax; //número de vueltas o tiempo maximo (ej: 10 vueltas/15 minutos)
     private double tarifa; //precio base
     private int duracion_total; //duracion total de la reserva (ej: para 10 vueltas, duracion maxima son 30 minutos

@@ -1,6 +1,7 @@
 package com.tingeso.reserva_service.Controller;
 
 import com.tingeso.reserva_service.Entity.Reserva;
+import com.tingeso.reserva_service.Model.TarifaDuracion;
 import com.tingeso.reserva_service.Service.ReservaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,24 +19,24 @@ public class ReservaController {
         this.reservaService = reservaService;
     }
 
-    @GetMapping
+    @GetMapping("/getAll")
     public ResponseEntity<List<Reserva>> getAllReservas() {
         return ResponseEntity.ok(reservaService.getAllReservas());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById/{id}")
     public ResponseEntity<Reserva> getReservaById(@PathVariable Integer id) {
         return reservaService.getReservaById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Reserva> createReserva(@RequestBody Reserva reserva) {
         return ResponseEntity.ok(reservaService.createReserva(reserva));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Reserva> updateReserva(@PathVariable Integer id, @RequestBody Reserva reserva) {
         Reserva updated = reservaService.updateReserva(id, reserva);
         if (updated == null) {
@@ -44,14 +45,15 @@ public class ReservaController {
         return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteReserva(@PathVariable Integer id) {
         reservaService.deleteReserva(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/obtenerTarifa")
-    public double getTarifa(@RequestParam int numVueltas) {
-        return reservaService.crearReserva(numVueltas);
+    @GetMapping("/obtenerTarifaNormal")
+    public TarifaDuracion getTarifa(@RequestParam int numVueltas) {
+        return reservaService.obtenerTarifaNormal(numVueltas);
     }
+
 }
