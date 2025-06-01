@@ -37,3 +37,4 @@ spring:
           uri: lb://reserva-service
           predicates:
             - Path=/api/reservas/**
+            - Path=/api/comprobante/**

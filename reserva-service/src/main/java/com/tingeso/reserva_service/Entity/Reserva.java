@@ -19,26 +19,21 @@ public class Reserva {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "reserva_id")  // clave foránea en DetallePagoPorPersona
-    private List<DetallePagoPorPersona> detallesPago;
-
     private int idUsuario;
 
-    private int numVueltasTiempoMaximo; //(10, 15 o 20 minutos o vueltas)
-    private int numPersonas; //Cantidad de personas para las que se generó la reserva
-    private int precioRegular; //Precio base
-    private int duracionTotal; //Duracion maxima (3, 35 o 40 min)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "comprobante_id")
+    private Comprobante comprobante;
+
+    private int num_vueltas_tiempo_maximo;
+    private int num_personas; //Cantidad de personas para las que se generó la reserva
+    private int precio_regular;
+    private int duracion_total;
     private LocalDateTime fechaHora; // Fecha en la que se generó la reserva
     private String nombreCliente;
 
     private LocalDate fechaInicio; //fecha de inicio de reserva
     private LocalTime horaInicio; // hora de inicio de reserva
     private LocalTime horaFin; // hora de fin de la reserva
-
-    private double descuento; // descuento total aplicado al grupo
-    private double precioFinal; // precio final del grupo (total)
-    private double iva; // valor del IVA total
-    private double montoTotalIva; // precio total con IVA
 
 }
