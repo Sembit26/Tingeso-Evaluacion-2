@@ -27,7 +27,7 @@ public class Reserva {
 
     private int num_vueltas_tiempo_maximo;
     private int num_personas; //Cantidad de personas para las que se generó la reserva
-    private int precio_regular;
+    private double precio_regular;
     private int duracion_total;
     private LocalDateTime fechaHora; // Fecha en la que se generó la reserva
     private String nombreCliente;

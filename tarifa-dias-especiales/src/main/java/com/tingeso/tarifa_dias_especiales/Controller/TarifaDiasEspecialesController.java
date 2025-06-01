@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +50,18 @@ public class TarifaDiasEspecialesController {
         return resultado.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/esDiaEspecial")
+    public ResponseEntity<Boolean> verificarDiaEspecial(@RequestParam String fecha) {
+        try {
+            LocalDate date = LocalDate.parse(fecha);
+            boolean esEspecial = service.esDiaEspecial(date);
+            return ResponseEntity.ok(esEspecial);
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().body(false);
+        }
+    }
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<TarifaDiasEspeciales> actualizar(@PathVariable int id, @RequestBody TarifaDiasEspeciales nuevaTarifa) {

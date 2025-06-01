@@ -5,8 +5,11 @@ import com.tingeso.tarifa_dias_especiales.Repository.TarifaDiasEspecialesReposit
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TarifaDiasEspecialesService {
@@ -36,6 +39,26 @@ public class TarifaDiasEspecialesService {
         return tarifas.stream()
                 .filter(t -> cantidadPersonas >= t.getMinPersonas() && cantidadPersonas <= t.getMaxPersonas())
                 .findFirst(); // o usar lógica más compleja si hay más de una válida
+    }
+
+    public boolean esDiaEspecial(LocalDate fecha) {
+        // 1. Verificar si es sábado o domingo
+        DayOfWeek dia = fecha.getDayOfWeek();
+        if (dia == DayOfWeek.SATURDAY || dia == DayOfWeek.SUNDAY) {
+            return true;
+        }
+
+        // 2. Verificar si es un feriado (puedes mover esto a config o DB)
+        Set<LocalDate> feriados = Set.of(
+                LocalDate.of(2025, 1, 1),   // Año Nuevo
+                LocalDate.of(2025, 5, 1),   // Día del Trabajador
+                LocalDate.of(2025, 9, 18),  // Independencia Chile
+                LocalDate.of(2025, 9, 19),  // Día de las Glorias del Ejército
+                LocalDate.of(2025, 12, 25)  // Navidad
+                // Agrega más si necesitas
+        );
+
+        return feriados.contains(fecha);
     }
 
 

@@ -125,4 +125,29 @@ public class ComprobanteService {
     }
 
 
+    public String formatearComprobante(Comprobante comprobante) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("========= RESUMEN DEL COMPROBANTE =========\n");
+        sb.append(String.format("Subtotal (sin IVA): %.2f\n", comprobante.getPrecio_final()));
+        sb.append(String.format("IVA: %.2f\n", comprobante.getIva()));
+        sb.append(String.format("Total con IVA: %.2f\n", comprobante.getMonto_total_iva()));
+        sb.append("-------------------------------------------\n");
+        sb.append("Detalle por persona:\n\n");
+
+        for (DetallePagoPorPersona detalle : comprobante.getDetallesPago()) {
+            sb.append("- ").append(detalle.getNombrePersona()).append("\n");
+            sb.append(String.format("  Precio Base (sin IVA): %.2f\n", detalle.getPrecioBase()));
+            sb.append(String.format("  Tipo de Descuento: %s\n", detalle.getTipoDescuento()));
+            sb.append(String.format("  Porcentaje de Descuento: %.1f%%\n", detalle.getPorcentajeDescuento()));
+            sb.append(String.format("  Monto Final sin IVA: %.2f\n", detalle.getMontoFinalSinIva()));
+            sb.append(String.format("  IVA: %.2f\n", detalle.getIva()));
+            sb.append(String.format("  Total con IVA: %.2f\n\n", detalle.getTotalConIva()));
+        }
+
+        sb.append("===========================================\n");
+        return sb.toString();
+    }
+
+
 }

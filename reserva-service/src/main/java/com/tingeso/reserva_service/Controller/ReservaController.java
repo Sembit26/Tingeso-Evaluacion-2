@@ -1,7 +1,6 @@
 package com.tingeso.reserva_service.Controller;
 
-import com.tingeso.reserva_service.DTO.ComprobanteDTO;
-import com.tingeso.reserva_service.Entity.Comprobante;
+import com.tingeso.reserva_service.DTO.ReservaDTO;
 import com.tingeso.reserva_service.Entity.Reserva;
 import com.tingeso.reserva_service.Model.DescuentoPorClienteFrecuente;
 import com.tingeso.reserva_service.Model.DescuentoPorPersonas;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/reservas")
@@ -37,8 +37,20 @@ public class ReservaController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Reserva> createReserva(@RequestBody Reserva reserva) {
-        return ResponseEntity.ok(reservaService.createReserva(reserva));
+    public ResponseEntity<Reserva> crearReserva(@RequestBody ReservaDTO request) {
+        Reserva reserva = reservaService.crearReserva(
+                request.getIdUsuario(),
+                request.getNumVueltasTiempoMaximo(),
+                request.getNumPersonas(),
+                request.getNumFrecuenciaCliente(),
+                request.getNombreCliente(),
+                request.getCorreoCliente(),
+                request.getNombreCorreo(),
+                request.getCorreosCumpleaneros(),
+                request.getFechaInicio(),
+                request.getHoraInicio()
+        );
+        return ResponseEntity.ok(reserva);
     }
 
     @PutMapping("/update/{id}")
@@ -77,26 +89,5 @@ public class ReservaController {
                                                             @RequestParam int cantidadCumpleaneros) {
         return reservaService.obtenerTarifaParaDiasEspeciales(numVueltas, cantidadCumpleaneros);
     }
-
-    @PostMapping("/generar")
-    public ResponseEntity<?> generarComprobante(@RequestBody ComprobanteDTO dto) {
-        try {
-            Comprobante comprobante = reservaService.generarComprobante(
-                    dto.getTarifa(),
-                    dto.getDescuentoCumpleaneros(),
-                    dto.getMaxCumpleanerosConDescuento(),
-                    dto.getDescuentoPorCantidadDePersonas(),
-                    dto.getDescuentoPorFrecuenciaCliente(),
-                    dto.getNombreCliente(),
-                    dto.getCorreoCliente(),
-                    dto.getNombreCorreo(),
-                    dto.getCorreosCumpleaneros()
-            );
-            return ResponseEntity.ok(comprobante);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al generar comprobante: " + e.getMessage());
-        }
-    }
-
 
 }

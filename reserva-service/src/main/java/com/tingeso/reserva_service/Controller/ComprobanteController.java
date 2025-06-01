@@ -2,9 +2,13 @@ package com.tingeso.reserva_service.Controller;
 
 import com.tingeso.reserva_service.DTO.ComprobanteDTO;
 import com.tingeso.reserva_service.Entity.Comprobante;
+import com.tingeso.reserva_service.Entity.DetallePagoPorPersona;
 import com.tingeso.reserva_service.Service.ComprobanteService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,4 +55,17 @@ public class ComprobanteController {
                 request.getCorreosCumpleaneros()
         );
     }
+
+    @GetMapping(value = "/formateado/{id}", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> obtenerComprobanteFormateado(@PathVariable Long id) {
+        Comprobante comprobante = comprobanteService.getById(id);
+
+        if (comprobante == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comprobante no encontrado");
+        }
+
+        String formatoTabla = comprobanteService.formatearComprobante(comprobante);
+        return ResponseEntity.ok(formatoTabla);
+    }
+
 }
