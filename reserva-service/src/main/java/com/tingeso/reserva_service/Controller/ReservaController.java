@@ -1,6 +1,7 @@
 package com.tingeso.reserva_service.Controller;
 
 import com.tingeso.reserva_service.Entity.Reserva;
+import com.tingeso.reserva_service.Model.DescuentoPorPersonas;
 import com.tingeso.reserva_service.Model.TarifaDuracion;
 import com.tingeso.reserva_service.Service.ReservaService;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +55,11 @@ public class ReservaController {
     @GetMapping("/obtenerTarifaNormal")
     public TarifaDuracion getTarifa(@RequestParam int numVueltas) {
         return reservaService.obtenerTarifaNormal(numVueltas);
+    }
+
+    @GetMapping("/obtenerDescuentoPorCantidadDePersonas/{numPersonas}")
+    public DescuentoPorPersonas getDescuentoPorCantidadDePersonas(@PathVariable int numPersonas) {
+        return reservaService.obtenerDescuentoPorCantidadDePersonas(numPersonas);
     }
 
 }

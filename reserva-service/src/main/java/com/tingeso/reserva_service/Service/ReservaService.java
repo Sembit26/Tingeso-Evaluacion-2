@@ -2,6 +2,8 @@ package com.tingeso.reserva_service.Service;
 
 import com.tingeso.reserva_service.Config.RestTemplateConfig;
 import com.tingeso.reserva_service.Entity.Reserva;
+import com.tingeso.reserva_service.Model.DescuentoPorClienteFrecuente;
+import com.tingeso.reserva_service.Model.DescuentoPorPersonas;
 import com.tingeso.reserva_service.Model.TarifaDuracion;
 import com.tingeso.reserva_service.Repository.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +22,18 @@ public class ReservaService {
     @Autowired
     RestTemplate restTemplate;
 
+    //----------------------------- CRUD -----------------------------
+    //Obtener todas las reservas
     public List<Reserva> getAllReservas() {
         return reservaRepository.findAll();
     }
 
+    //Obtener reserva por Id
     public Optional<Reserva> getReservaById(Integer id) {
         return reservaRepository.findById(id);
     }
 
+    //crear Reserva
     public Reserva createReserva(Reserva reserva) {
         // gracias a CascadeType.ALL en Reserva, los DetallePagoPorPersona también se guardarán
         return reservaRepository.save(reserva);
@@ -44,8 +50,17 @@ public class ReservaService {
         reservaRepository.deleteById(id);
     }
 
+    //----------------------------- LOGICA AVANZADA -----------------------------
+
     public TarifaDuracion obtenerTarifaNormal(int numVueltas_TiempoMaximo){
         TarifaDuracion tarifaDuracion = restTemplate.getForObject("http://tarifa-duracion-reserva-service/api/tarifasDuracion/buscarPorVueltas?numVueltas=" + numVueltas_TiempoMaximo, TarifaDuracion.class);
         return tarifaDuracion;
     }
+
+    public DescuentoPorPersonas obtenerDescuentoPorCantidadDePersonas(int numPersonas){
+        DescuentoPorPersonas descuentoPorPersonas = restTemplate.getForObject("http://descuento-por-personas-service/api/descuentoPorNumPersonas/buscarDescuento/" + numPersonas, DescuentoPorPersonas.class);
+        return descuentoPorPersonas;
+    }
+
+
 }
