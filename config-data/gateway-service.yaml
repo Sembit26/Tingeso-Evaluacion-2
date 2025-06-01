@@ -36,5 +36,4 @@ spring:
         - id: reserva-service
           uri: lb://reserva-service
           predicates:
-            - Path=/api/reservas/**
-            - Path=/api/comprobante/**
+            - Path=/api/{segment=reservas|comprobante}/**

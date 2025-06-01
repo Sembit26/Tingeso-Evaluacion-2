@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/comprobantes")
+@RequestMapping("/api/comprobante")
 @CrossOrigin(origins = "*") // Habilita CORS si usas frontend separado
 public class ComprobanteController {
 
@@ -37,7 +37,7 @@ public class ComprobanteController {
     }
 
     // Crear comprobante
-    @PostMapping("create")
+    @PostMapping("/create")
     public Comprobante crearComprobante(@RequestBody ComprobanteDTO request) {
         return comprobanteService.crearComprobante(
                 request.getTarifa(),

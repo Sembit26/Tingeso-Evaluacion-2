@@ -46,29 +46,23 @@ public class ComprobanteService {
         int cumpleDescuentoAsignado = 0;
         List<DetallePagoPorPersona> detalles = new ArrayList<>();
 
-        // --- Procesar grupo completo (incluyendo cliente principal) ---
+        // Procesar acompañantes (grupo excepto cliente principal)
         for (Map.Entry<String, String> entry : nombreCorreo.entrySet()) {
             String nombre = entry.getKey();
             String correo = entry.getValue();
 
-            boolean esClientePrincipal = nombre.equals(nombreCliente) && correo.equals(correoCliente);
             double descuentoAplicado = 0.0;
             String tipoDescuento = "Ninguno";
 
-            // --- Lógica de descuentos en orden de prioridad ---
             if (correosCumpleaneros.contains(correo) && cumpleDescuentoAsignado < maxCumpleanerosConDescuento) {
                 descuentoAplicado = descuentoCumpleaneros;
                 tipoDescuento = "Cumpleaños";
                 cumpleDescuentoAsignado++;
-            } else if (esClientePrincipal && descuentoPorFrecuenciaCliente > 0) {
-                descuentoAplicado = descuentoPorFrecuenciaCliente;
-                tipoDescuento = "Frecuencia";
-            } else if (!esClientePrincipal && descuentoPorCantidadDePersonas > 0) {
+            } else if (descuentoPorCantidadDePersonas > 0) {
                 descuentoAplicado = descuentoPorCantidadDePersonas;
                 tipoDescuento = "Grupal";
             }
 
-            // --- Cálculo de montos ---
             double montoSinIva = tarifa * (1 - descuentoAplicado);
             double iva = montoSinIva * 0.19;
             double totalConIva = montoSinIva + iva;
@@ -78,13 +72,45 @@ public class ComprobanteService {
             detalle.setNombrePersona(nombre);
             detalle.setPrecioBase(tarifa);
             detalle.setTipoDescuento(tipoDescuento);
-            detalle.setPorcentajeDescuento(Math.round(descuentoAplicado * 100.0)); // porcentaje entero
+            detalle.setPorcentajeDescuento(Math.round(descuentoAplicado * 100.0));
             detalle.setMontoFinalSinIva(Math.round(montoSinIva * 100.0) / 100.0);
             detalle.setIva(Math.round(iva * 100.0) / 100.0);
             detalle.setTotalConIva(Math.round(totalConIva * 100.0) / 100.0);
 
             detalles.add(detalle);
         }
+
+        // Procesar cliente principal **separado**, con prioridad en descuentos (cumpleaños, frecuencia, grupal)
+        double descuentoAplicadoCliente = 0.0;
+        String tipoDescuentoCliente = "Ninguno";
+
+        if (correosCumpleaneros.contains(correoCliente) && cumpleDescuentoAsignado < maxCumpleanerosConDescuento) {
+            descuentoAplicadoCliente = descuentoCumpleaneros;
+            tipoDescuentoCliente = "Cumpleaños";
+            cumpleDescuentoAsignado++;
+        } else if (descuentoPorFrecuenciaCliente > 0) {
+            descuentoAplicadoCliente = descuentoPorFrecuenciaCliente;
+            tipoDescuentoCliente = "Frecuencia";
+        } else if (descuentoPorCantidadDePersonas > 0) {
+            descuentoAplicadoCliente = descuentoPorCantidadDePersonas;
+            tipoDescuentoCliente = "Grupal";
+        }
+
+        double montoSinIvaCliente = tarifa * (1 - descuentoAplicadoCliente);
+        double ivaCliente = montoSinIvaCliente * 0.19;
+        double totalConIvaCliente = montoSinIvaCliente + ivaCliente;
+        totalSinIva += montoSinIvaCliente;
+
+        DetallePagoPorPersona detalleCliente = new DetallePagoPorPersona();
+        detalleCliente.setNombrePersona(nombreCliente);
+        detalleCliente.setPrecioBase(tarifa);
+        detalleCliente.setTipoDescuento(tipoDescuentoCliente);
+        detalleCliente.setPorcentajeDescuento(Math.round(descuentoAplicadoCliente * 100.0));
+        detalleCliente.setMontoFinalSinIva(Math.round(montoSinIvaCliente * 100.0) / 100.0);
+        detalleCliente.setIva(Math.round(ivaCliente * 100.0) / 100.0);
+        detalleCliente.setTotalConIva(Math.round(totalConIvaCliente * 100.0) / 100.0);
+
+        detalles.add(detalleCliente);
 
         double ivaTotal = totalSinIva * 0.19;
         double totalConIva = totalSinIva + ivaTotal;
@@ -97,5 +123,6 @@ public class ComprobanteService {
 
         return comprobanteRepository.save(comprobante);
     }
+
 
 }
