@@ -101,7 +101,6 @@ public class ReservaService {
         List<Reserva> reservasQueSeCruzan = reservaRepository.findReservasQueSeCruzan(fecha, horaInicio, horaFin);
         return reservasQueSeCruzan.isEmpty();
     }
-
      */
 
     public Reserva crearReserva(int id_usuario, int numVueltas_TiempoMaximo, int numPersonas,
@@ -149,7 +148,6 @@ public class ReservaService {
         if (!esReservaPosible(fechaInicio, horaInicio, reserva.getHoraFin())) {
             throw new RuntimeException("Ya existe una reserva en ese horario.");
         }
-
          */
 
         Comprobante comprobante = comprobanteService.crearComprobante(tarifa,
@@ -161,25 +159,18 @@ public class ReservaService {
         reserva.setComprobante(comprobante);
 
         reserva.setComprobante(comprobante);
-        Reserva reservaGuardada = reservaRepository.save(reserva);
 
         // --- Aquí empieza el envío de correos ---
+        String resumenReserva = obtenerInformacionReservaConComprobante(reserva);
 
-        // 1. Obtener el resumen formateado
-        String resumenReserva = obtenerInformacionReservaConComprobante(reservaGuardada);
-
-        // 2. Generar el PDF con ese resumen
         File archivoPdf = generarPDFReserva(resumenReserva);
 
-        // 3. Enviar correo al cliente
-        enviarCorreoReservaConPDF(correoCliente, resumenReserva, archivoPdf);
+        nombreCorreo.values().stream()
+                .filter(correo -> correo != null && !correo.trim().isEmpty())
+                .forEach(correo -> enviarCorreoReservaConPDF(correo, "Resumen de reserva", archivoPdf));
 
-        // 4. Enviar correos a cada acompañante
-        for (String correoAcompanante : correosCumpleaneros) {
-            enviarCorreoReservaConPDF(correoAcompanante, resumenReserva, archivoPdf);
-        }
+        enviarCorreoReservaConPDF(correoCliente, "Resumen de reserva", archivoPdf);
 
-        // Opcional: borrar el archivo temporal después de enviar los correos
         if (archivoPdf != null && archivoPdf.exists()) {
             archivoPdf.delete();
         }
@@ -217,20 +208,20 @@ public class ReservaService {
     // ==================== GENERACIÓN DE PDF Y CORREO ====================
 
     public File generarPDFReserva(String resumen) {
+        String filePath = "reserva_comprobante.pdf";
+        File file = new File(filePath);
+
         try {
-            File file = File.createTempFile("reserva_comprobante_", ".pdf");
-
-            try (PdfWriter writer = new PdfWriter(file);
-                 PdfDocument pdf = new PdfDocument(writer);
-                 Document document = new Document(pdf)) {
-
-                document.add(new Paragraph(resumen));
-            }
-            return file;
+            PdfWriter writer = new PdfWriter(file);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf);
+            document.add(new Paragraph(resumen));
+            document.close();
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
         }
+
+        return file;
     }
 
     public void enviarCorreoReservaConPDF(String correo, String cuerpo, File archivoPdf) {
