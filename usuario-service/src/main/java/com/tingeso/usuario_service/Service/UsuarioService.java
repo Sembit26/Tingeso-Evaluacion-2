@@ -1,8 +1,13 @@
 package com.tingeso.usuario_service.Service;
 
 import com.tingeso.usuario_service.Entity.Usuario;
+import com.tingeso.usuario_service.Model.Reserva;
 import com.tingeso.usuario_service.Repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,9 +18,11 @@ import java.util.Optional;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final RestTemplate restTemplate;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, RestTemplate restTemplate) {
         this.usuarioRepository = usuarioRepository;
+        this.restTemplate = restTemplate;
     }
 
     // CRUD básico
@@ -44,7 +51,7 @@ public class UsuarioService {
     }
 
     public Usuario register(String name, String email, String contrasenia, LocalDate birthday) {
-        if (usuarioRepository.findByEmail(email) == null) {
+        if (usuarioRepository.findByEmail(email) != null) {
             throw new RuntimeException("El cliente con el correo ya existe.");
         }
 
@@ -59,8 +66,6 @@ public class UsuarioService {
         return usuarioRepository.save(nuevoUsuario);
     }
 
-
-    // Login: devuelve el usuario si email y contraseña coinciden
     public Usuario login(String email, String contrasena) {
         Usuario usuario = usuarioRepository.findByEmail(email);
 
@@ -72,4 +77,52 @@ public class UsuarioService {
 
         return usuario;
     }
+
+    public Reserva generarReservaCliente(int idUsuario, Reserva reserva) {
+        reserva.setIdUsuario(idUsuario);
+
+        // Obtener usuario
+        Optional<Usuario> usuarioOpt = getUsuarioById(idUsuario);
+        if (usuarioOpt.isEmpty()) {
+            throw new RuntimeException("Usuario no encontrado con ID: " + idUsuario);
+        }
+
+        Usuario usuario = usuarioOpt.get();
+        String correoCliente = usuario.getEmail();
+        String nombreCliente = usuario.getName();
+        int numFrecuencia = usuario.getNum_visitas_al_mes();
+
+        // Setear datos del cliente en la reserva
+        reserva.setCorreoCliente(correoCliente);
+        reserva.setNombreCliente(nombreCliente);
+        reserva.setNumFrecuenciaCliente(numFrecuencia);
+
+        // Generar la reserva en el microservicio
+        HttpEntity<Reserva> request = new HttpEntity<>(reserva);
+        Reserva reservaNew = restTemplate.postForObject("http://reserva-service/api/reservas/create", request, Reserva.class);
+
+        // Aumentar la frecuencia del cliente
+        usuario.setNum_visitas_al_mes(numFrecuencia + 1);
+        usuarioRepository.save(usuario); // ✅ Asegúrate de tener acceso al repositorio
+
+        return reservaNew;
+    }
+
+    public Reserva generarReservaAdmin(String correoCliente, Reserva reserva){
+        Usuario usuario = usuarioRepository.findByEmail(correoCliente);
+        int idUsuario = usuario.getId();
+        String nombreCliente = usuario.getName();
+
+        reserva.setIdUsuario(idUsuario);
+        reserva.setCorreoCliente(correoCliente);
+        reserva.setNombreCliente(nombreCliente);
+        reserva.setNumFrecuenciaCliente(0); //Aqui es cero dado que es el admin quien hace la reserva
+
+        // Generar la reserva en el microservicio
+        HttpEntity<Reserva> request = new HttpEntity<>(reserva);
+        Reserva reservaNew = restTemplate.postForObject("http://reserva-service/api/reservas/create", request, Reserva.class);
+
+        return reservaNew;
+    }
+
 }

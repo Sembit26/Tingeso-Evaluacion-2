@@ -3,6 +3,7 @@ package com.tingeso.usuario_service.Controller;
 import com.tingeso.usuario_service.DTO.UsuarioLoginDTO;
 import com.tingeso.usuario_service.DTO.UsuarioRegisterDTO;
 import com.tingeso.usuario_service.Entity.Usuario;
+import com.tingeso.usuario_service.Model.Reserva;
 import com.tingeso.usuario_service.Service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,6 +69,34 @@ public class UsuarioController {
             return ResponseEntity.ok(usuario);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+    }
+
+    @PostMapping("/generarReserva/{idUsuario}")
+    public ResponseEntity<Reserva> crearReservaParaUsuario(
+            @PathVariable int idUsuario,
+            @RequestBody Reserva reserva) {
+
+        try {
+            Reserva reservaCreada = usuarioService.generarReservaCliente(idUsuario, reserva);
+            return ResponseEntity.ok(reservaCreada);
+        } catch (Exception e) {
+            // Aquí puedes manejar excepciones específicas y devolver errores más precisos
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/generarReservaAdmin")
+    public ResponseEntity<Reserva> crearReservaAdmin(
+            @RequestParam String correoCliente,
+            @RequestBody Reserva reserva) {
+        try {
+            Reserva reservaCreada = usuarioService.generarReservaAdmin(correoCliente, reserva);
+            return ResponseEntity.ok(reservaCreada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
