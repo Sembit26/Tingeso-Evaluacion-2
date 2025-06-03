@@ -1,9 +1,11 @@
 package com.tingeso.rack_semanal_service.Controller;
 
 import com.tingeso.rack_semanal_service.DTO.HorarioOcupadoDTO;
+import com.tingeso.rack_semanal_service.DTO.HorariosDisponiblesDTO;
 import com.tingeso.rack_semanal_service.Entity.RackSemanal;
 import com.tingeso.rack_semanal_service.Service.RackSemanalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -37,14 +39,15 @@ public class RackSemanalController {
         rackSemanalService.deleteById(id);
     }
 
-    @GetMapping("/horariosOcupadosSemana")
-    public List<HorarioOcupadoDTO> getHorariosOcupadosPorSemana(
-            @RequestParam("inicio") String inicio,
-            @RequestParam("fin") String fin) {
+    @GetMapping("/horariosOcupados")
+    public List<HorarioOcupadoDTO> getTodosHorariosOcupados() {
+        return rackSemanalService.obtenerTodosLosHorariosOcupados();
+    }
 
-        LocalDate fechaInicio = LocalDate.parse(inicio);
-        LocalDate fechaFin = LocalDate.parse(fin);
-
-        return rackSemanalService.obtenerHorariosOcupadosPorSemana(fechaInicio, fechaFin);
+    // Endpoint para obtener horarios disponibles de los próximos 2 meses
+    @GetMapping("/horariosDisponibles")
+    public List<HorariosDisponiblesDTO> getHorariosDisponiblesProximosDosMeses() {
+        LocalDate hoy = LocalDate.now();
+        return rackSemanalService.obtenerHorariosDisponiblesProximosDosMeses(hoy);
     }
 }
