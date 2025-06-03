@@ -160,7 +160,7 @@ public class ReservaService {
 
         reserva.setComprobante(comprobante);
 
-        reserva = reservaRepository.save(reserva); // ✅ Esto asegura que tenga un ID válido
+        reserva = reservaRepository.save(reserva);
 
         // --- Aquí empieza el envío de correos ---
         String resumenReserva = obtenerInformacionReservaConComprobante(reserva);

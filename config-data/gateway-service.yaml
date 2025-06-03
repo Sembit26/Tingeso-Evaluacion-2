@@ -45,3 +45,7 @@ spring:
           uri: lb://usuario-service
           predicates:
             - Path=/api/usuarios/**
+        - id: rack-semanal-service
+          uri: lb://rack-semanal-service
+          predicates:
+            - Path=/api/rackSemanal/**
