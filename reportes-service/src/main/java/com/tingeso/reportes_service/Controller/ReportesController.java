@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -62,5 +63,20 @@ public class ReportesController {
             @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
         List<ReservaDTO> reservas = reportesService.obtenerReservasPorRangoDeMeses(fechaInicio, fechaFin);
         return ResponseEntity.ok(reservas);
+    }
+
+    @GetMapping("/ingresos-por-vueltas")
+    public ResponseEntity<Map<String, Map<String, Double>>> obtenerReporteIngresosPorVueltas(
+            @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+        Map<String, Map<String, Double>> reporte = reportesService.generarReporteIngresosPorVueltas(fechaInicio, fechaFin);
+        return ResponseEntity.ok(reporte);
+    }
+
+    @GetMapping("/ingresos-por-grupo")
+    public Map<String, Map<String, Double>> obtenerIngresosPorGrupo(
+            @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+        return reportesService.generarReporteIngresosPorGrupoDePersonas(fechaInicio, fechaFin);
     }
 }

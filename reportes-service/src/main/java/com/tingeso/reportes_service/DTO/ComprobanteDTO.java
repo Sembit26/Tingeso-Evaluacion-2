@@ -8,5 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ComprobanteDTO {
-    private double montoTotalIva;
+    private double precio_final;
+    private double iva;
+    private double monto_total_iva;
 }

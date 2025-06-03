@@ -23,5 +23,5 @@ public class ReservaDTO {
     private LocalDate fechaInicio;
     private LocalTime horaInicio;
     private LocalTime horaFin;
+    private ComprobanteDTO comprobante; // Nuevo campo agregado
 }
-
