@@ -49,3 +49,7 @@ spring:
           uri: lb://rack-semanal-service
           predicates:
             - Path=/api/rackSemanal/**
+        - id: reportes-service
+          uri: lb://reportes-service
+          predicates:
+            - Path=/api/reportes/**
