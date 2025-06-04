@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
-@CrossOrigin("*") // Habilita CORS para frontend como Vue o React
+@CrossOrigin("*")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
