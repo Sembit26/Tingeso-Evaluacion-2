@@ -95,13 +95,10 @@ public class ReservaService {
     }
 
     //----------------- LOGICA AVANZADA ---------------------
-
-    /*
     public boolean esReservaPosible(LocalDate fecha, LocalTime horaInicio, LocalTime horaFin) {
         List<Reserva> reservasQueSeCruzan = reservaRepository.findReservasQueSeCruzan(fecha, horaInicio, horaFin);
         return reservasQueSeCruzan.isEmpty();
     }
-     */
 
     public Reserva crearReserva(int id_usuario, int numVueltas_TiempoMaximo, int numPersonas,
                              int numFrecuenciaCliente, String nombreCliente,
@@ -118,12 +115,10 @@ public class ReservaService {
         reserva.setHoraInicio(horaInicio);
         reserva.setNombreCliente(nombreCliente);
 
-        int cantidadCumpleaneros = correosCumpleaneros.size();
-
         //Obtener datos de los microservicios
         boolean esFinDeSemanaFeriado = saberSiEsFinDeSemana_Feriado(fechaInicio);
         TarifaDuracion tarifaDuracionNormal = obtenerTarifaNormal(numVueltas_TiempoMaximo);
-        TarifaDiasEspeciales tarifaDiasEspeciales = obtenerTarifaParaDiasEspeciales(numVueltas_TiempoMaximo, cantidadCumpleaneros);
+        TarifaDiasEspeciales tarifaDiasEspeciales = obtenerTarifaParaDiasEspeciales(numVueltas_TiempoMaximo, numPersonas);
         DescuentoPorPersonas descuentoPorCantidadDePersonas = obtenerDescuentoPorCantidadDePersonas(numPersonas);
         DescuentoPorClienteFrecuente descuentoPorClienteFrecuente = obtenerDescuentoPorFrecuenciaDeCliente(numFrecuenciaCliente);
 
@@ -144,11 +139,11 @@ public class ReservaService {
         reserva.setPrecio_regular(tarifa);
         reserva.setHoraFin(horaInicio.plusMinutes(duracionTotal));
 
-        /*
+
         if (!esReservaPosible(fechaInicio, horaInicio, reserva.getHoraFin())) {
             throw new RuntimeException("Ya existe una reserva en ese horario.");
         }
-         */
+
 
         Comprobante comprobante = comprobanteService.crearComprobante(tarifa,
                 descuentoCumpleaneros, maxCumpleanerosConDescuento,
@@ -163,8 +158,6 @@ public class ReservaService {
         reserva = reservaRepository.save(reserva);
 
         // --- Aquí empieza el envío de correos ---
-
-        /*
         String resumenReserva = obtenerInformacionReservaConComprobante(reserva);
 
         File archivoPdf = generarPDFReserva(resumenReserva);
@@ -178,8 +171,6 @@ public class ReservaService {
         if (archivoPdf != null && archivoPdf.exists()) {
             archivoPdf.delete();
         }
-
-         */
 
         return reserva;
     }

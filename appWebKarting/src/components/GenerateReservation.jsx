@@ -229,7 +229,7 @@ const GenerateReservation = () => {
               {numPersonas >= 3 && cumpleanerosFields.map((_, index) => (
                 <div key={index}>
                   <TextField
-                    label={`Correo Cumpleañero ${index + 1} (Debe estar registrado para aplicar el descuento)`}
+                    label={`Correo Cumpleañero ${index + 1}`}
                     fullWidth
                     value={cumpleaneros[index] || ''}
                     onChange={(e) => {
