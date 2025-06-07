@@ -130,7 +130,7 @@ const GenerateReservationEmployee = () => {
             <Box component="form" onSubmit={(e) => e.preventDefault()}>
             
               <TextField
-                label="Correo del Cliente"
+                label="Correo del Cliente (Debe estar registrado para generar reserva)"
                 required
                 fullWidth
                 value={correoCliente}
