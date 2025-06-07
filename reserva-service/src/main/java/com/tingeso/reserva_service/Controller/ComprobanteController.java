@@ -16,7 +16,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/comprobante")
-@CrossOrigin(origins = "*") // Habilita CORS si usas frontend separado
 public class ComprobanteController {
 
     @Autowired
