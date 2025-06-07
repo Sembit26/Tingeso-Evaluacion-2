@@ -60,6 +60,23 @@ public class RackSemanalService {
                 .collect(Collectors.toList());
     }
 
+    public Optional<ReservaDTO> obtenerReservaPorFechaHoraInicioYHoraFin(LocalDate fechaInicio, LocalTime horaInicio, LocalTime horaFin) {
+        String url = "http://reserva-service/api/reservas/getAll";
+        ReservaDTO[] todasReservas = restTemplate.getForObject(url, ReservaDTO[].class);
+
+        if (todasReservas == null || todasReservas.length == 0) {
+            return Optional.empty();
+        }
+
+        return Arrays.stream(todasReservas)
+                .filter(r ->
+                        r.getFechaInicio().equals(fechaInicio) &&
+                                r.getHoraInicio().equals(horaInicio) &&
+                                r.getHoraFin().equals(horaFin)
+                )
+                .findFirst();
+    }
+
     public List<HorarioOcupadoDTO> obtenerTodosLosHorariosOcupados() {
         // Llamar al microservicio de reserva (ajusta la URL según tu servicio)
         String url = "http://reserva-service/api/reservas/getAll";

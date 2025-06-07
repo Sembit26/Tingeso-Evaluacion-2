@@ -2,6 +2,7 @@ package com.tingeso.rack_semanal_service.Controller;
 
 import com.tingeso.rack_semanal_service.DTO.HorarioOcupadoDTO;
 import com.tingeso.rack_semanal_service.DTO.HorariosDisponiblesDTO;
+import com.tingeso.rack_semanal_service.DTO.ReservaDTO;
 import com.tingeso.rack_semanal_service.Entity.RackSemanal;
 import com.tingeso.rack_semanal_service.Service.RackSemanalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,4 +52,14 @@ public class RackSemanalController {
         LocalDate hoy = LocalDate.now();
         return rackSemanalService.obtenerHorariosDisponiblesProximosDosMeses(hoy);
     }
+
+    @GetMapping("/obtenerReservaPorFechaYHora")
+    public Optional<ReservaDTO> obtenerReserva(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime horaInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime horaFin
+    ) {
+        return rackSemanalService.obtenerReservaPorFechaHoraInicioYHoraFin(fechaInicio, horaInicio, horaFin);
+    }
+
 }

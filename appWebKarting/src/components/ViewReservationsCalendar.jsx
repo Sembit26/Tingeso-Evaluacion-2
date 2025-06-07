@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { parse, startOfWeek, format, getDay } from "date-fns";
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import reservaService from "../services/reservation.service";
+import rackSemanalService from "../services/rackSemanal.service";
+
 import { useNavigate } from "react-router-dom";
 import es from 'date-fns/locale/es';
 
@@ -27,43 +28,40 @@ const ViewReservationsCalendar = () => {
     now.setSeconds(0);
     now.setMilliseconds(0);
 
-    reservaService.horariosDisponiblesSeisMeses()
+    rackSemanalService.horariosDisponiblesSeisMeses()
       .then((res) => {
         const data = res.data;
         const eventosGenerados = [];
 
-        Object.entries(data).forEach(([fecha, bloques]) => {
-          bloques.forEach(bloque => {
-            const [inicioStr, finStr] = bloque.split(' - ');
-            const [anio, mes, dia] = fecha.split('-').map(Number);
-            const [hIni, mIni] = inicioStr.split(':').map(Number);
-            const [hFin, mFin] = finStr.split(':').map(Number);
+        data.forEach(({ fecha, horariosDisponibles }) => {
+        horariosDisponibles.forEach(bloque => {
+          const [inicioStr, finStr] = bloque.split(' - ');
+          const [anio, mes, dia] = fecha.split('-').map(Number);
+          const [hIni, mIni] = inicioStr.split(':').map(Number);
+          const [hFin, mFin] = finStr.split(':').map(Number);
 
-            let start = new Date(anio, mes - 1, dia, hIni, mIni);
-            const end = new Date(anio, mes - 1, dia, hFin, mFin);
+          let start = new Date(anio, mes - 1, dia, hIni, mIni);
+          const end = new Date(anio, mes - 1, dia, hFin, mFin);
 
-            const esHoy = start.toDateString() === now.toDateString();
+          const esHoy = start.toDateString() === now.toDateString();
 
-            if (esHoy) {
-              // Ajustar el inicio si la hora actual es posterior
-              if (start <= now) {
-                start = new Date(now); // Clonar "now"
-              }
-            }
+          if (esHoy && start <= now) {
+            start = new Date(now); // Ajustar si ya pasó
+          }
 
-            const minutosDisponibles = (end.getTime() - start.getTime()) / 60000;
+          const minutosDisponibles = (end - start) / 60000;
 
-            // Agregar evento solo si hay al menos 30 minutos disponibles
-            if (end > now && minutosDisponibles >= 30) {
-              eventosGenerados.push({
-                title: 'Disponible',
-                start,
-                end,
-                allDay: false,
-              });
-            }
-          });
+          if (end > now && minutosDisponibles >= 30) {
+            eventosGenerados.push({
+              title: 'Disponible',
+              start,
+              end,
+              allDay: false,
+            });
+          }
         });
+      });
+
 
         setEventos(eventosGenerados);
       })
@@ -75,21 +73,6 @@ const ViewReservationsCalendar = () => {
   const handleNavigate = (date) => {
     // This function is triggered when the user navigates through the calendar
     setCurrentDate(date); // Update the current date being viewed
-  };
-
-  const eventStyleGetter = (event) => {
-    let backgroundColor = '#2196f3';
-
-    return {
-      style: {
-        backgroundColor,
-        borderRadius: '5px',
-        opacity: 0.9,
-        color: 'white',
-        border: 'none',
-        padding: '2px 4px',
-      }
-    };
   };
 
   return (

@@ -89,14 +89,20 @@ const GenerateReservation = () => {
       const idCliente = cliente.id;
       console.log("ID Cliente:", idCliente);
 
+      const nombreCorreo = {};
+      for (let i = 0; i < nombres.length; i++) {
+        if (nombres[i] && correos[i]) {
+          nombreCorreo[nombres[i]] = correos[i]; // Los nombres repetidos sobreescriben el anterior
+        }
+      }
+
       const data = {
         numVueltasTiempoMaximo,
         numPersonas,
         fechaInicio,
         horaInicio,
-        cumpleaneros,
-        nombres,
-        correos,
+        nombreCorreo:nombreCorreo,
+        correosCumpleaneros: cumpleaneros,
       };
 
       console.log("Datos que se enviarán al backend:", data);

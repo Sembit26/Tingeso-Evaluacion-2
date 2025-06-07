@@ -57,9 +57,9 @@ public class ReservaService {
     }
 
     public Reserva updateReserva(Integer id, Reserva reservaActualizada) {
-        return reservaRepository.findById(id).map(reservaExistente -> {
-            reservaActualizada.setId(reservaExistente.getId());
-            return reservaRepository.save(reservaActualizada);
+        return reservaRepository.findById(id).map(reserva -> {
+            reserva.setNombreCliente(reservaActualizada.getNombreCliente());
+            return reservaRepository.save(reserva);
         }).orElse(null);
     }
 
@@ -163,6 +163,8 @@ public class ReservaService {
         reserva = reservaRepository.save(reserva);
 
         // --- Aquí empieza el envío de correos ---
+
+        /*
         String resumenReserva = obtenerInformacionReservaConComprobante(reserva);
 
         File archivoPdf = generarPDFReserva(resumenReserva);
@@ -176,6 +178,8 @@ public class ReservaService {
         if (archivoPdf != null && archivoPdf.exists()) {
             archivoPdf.delete();
         }
+
+         */
 
         return reserva;
     }

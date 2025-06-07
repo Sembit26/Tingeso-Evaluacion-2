@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { parse, startOfWeek, format, getDay } from "date-fns";
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import reservaService from "../services/reservation.service";
+import rackSemanalService from "../services/rackSemanal.service";
 import { useNavigate } from "react-router-dom";
 import es from 'date-fns/locale/es';
 import HamburgerMenu from "../components/HamburgerMenu"; // ✅ Importar menú
@@ -45,83 +45,84 @@ const ViewAllReservations = () => {
     now.setMilliseconds(0);
 
     Promise.all([
-      reservaService.horariosDisponiblesSeisMeses(),
-      reservaService.obtenerTodasLasReservasOcupadas(),
+      rackSemanalService.horariosDisponiblesSeisMeses(),
+      rackSemanalService.obtenerTodasLasReservasOcupadas(),
     ])
       .then(async ([disponiblesRes, ocupadosRes]) => {
         const disponiblesData = disponiblesRes.data;
         const ocupadosData = ocupadosRes.data;
         const nuevosEventos = [];
 
-        Object.entries(disponiblesData).forEach(([fecha, bloques]) => {
-          const [anio, mes, dia] = fecha.split('-').map(Number);
+        disponiblesData.forEach(({ fecha, horariosDisponibles }) => {
+  const [anio, mes, dia] = fecha.split('-').map(Number);
 
-          bloques.forEach(bloque => {
-            const [inicioStr, finStr] = bloque.split(' - ');
-            const [hIni, mIni] = inicioStr.split(':').map(Number);
-            const [hFin, mFin] = finStr.split(':').map(Number);
+  horariosDisponibles.forEach(bloque => {
+    const [inicioStr, finStr] = bloque.split(' - ');
+    const [hIni, mIni] = inicioStr.split(':').map(Number);
+    const [hFin, mFin] = finStr.split(':').map(Number);
 
-            let start = new Date(anio, mes - 1, dia, hIni, mIni);
-            const end = new Date(anio, mes - 1, dia, hFin, mFin);
+    let start = new Date(anio, mes - 1, dia, hIni, mIni);
+    const end = new Date(anio, mes - 1, dia, hFin, mFin);
 
-            const esHoy = start.toDateString() === now.toDateString();
-            if (esHoy && start <= now) start = new Date(now);
+    const esHoy = start.toDateString() === now.toDateString();
+    if (esHoy && start <= now) start = new Date(now);
 
-            const minutosDisponibles = (end.getTime() - start.getTime()) / 60000;
-            if (end > now && minutosDisponibles >= 30) {
-              nuevosEventos.push({
-                title: 'Disponible',
-                start,
-                end,
-                allDay: false,
-                tipo: 'disponible',
-                id: `${anio}-${mes}-${dia}-${hIni}-${mIni}`
-              });
-            }
-          });
-        });
+    const minutosDisponibles = (end.getTime() - start.getTime()) / 60000;
+    if (end > now && minutosDisponibles >= 30) {
+      nuevosEventos.push({
+        title: 'Disponible',
+        start,
+        end,
+        allDay: false,
+        tipo: 'disponible',
+        id: `${anio}-${mes}-${dia}-${hIni}-${mIni}`
+      });
+    }
+  });
+});
 
         const promises = [];
 
-        Object.entries(ocupadosData).forEach(([fecha, bloques]) => {
-          const [anio, mes, dia] = fecha.split('-').map(Number);
+        ocupadosData.forEach(({ fecha, horariosOcupados }) => {
+  const [anio, mes, dia] = fecha.split('-').map(Number);
 
-          bloques.forEach(bloque => {
-            const [inicioStr, finStr] = bloque.split(' - ');
-            const [hIni, mIni] = inicioStr.split(':').map(Number);
-            const [hFin, mFin] = finStr.split(':').map(Number);
+  horariosOcupados.forEach(bloque => {
+    const [inicioStr, finStr] = bloque.split(' - ');
+    const [hIni, mIni] = inicioStr.split(':').map(Number);
+    const [hFin, mFin] = finStr.split(':').map(Number);
 
-            const start = new Date(anio, mes - 1, dia, hIni, mIni);
-            const end = new Date(anio, mes - 1, dia, hFin, mFin);
-            const fechaISO = `${anio}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+    const start = new Date(anio, mes - 1, dia, hIni, mIni);
+    const end = new Date(anio, mes - 1, dia, hFin, mFin);
+    const fechaISO = `${anio}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
 
-            const prom = reservaService
-              .obtenerReservaPorFechaYHora(fechaISO, inicioStr, finStr)
-              .then(res => {
-                const nombre = res.data?.nombreCliente || 'Reservado';
-                nuevosEventos.push({
-                  title: nombre,
-                  start,
-                  end,
-                  allDay: false,
-                  tipo: 'reservado',
-                  id: res.data.id,
-                });
-              })
-              .catch(() => {
-                nuevosEventos.push({
-                  title: 'Reservado',
-                  start,
-                  end,
-                  allDay: false,
-                  tipo: 'reservado',
-                  id: `${anio}-${mes}-${dia}-${hIni}-${mIni}`
-                });
-              });
-
-            promises.push(prom);
-          });
+    const prom = rackSemanalService
+      .obtenerReservaPorFechaYHora(fechaISO, inicioStr, finStr)
+      .then(res => {
+        const nombre = res.data?.nombreCliente || 'Reservado';
+        nuevosEventos.push({
+          title: nombre,
+          start,
+          end,
+          allDay: false,
+          tipo: 'reservado',
+          id: res.data.id,
         });
+      })
+      .catch(() => {
+        nuevosEventos.push({
+          title: 'Reservado',
+          start,
+          end,
+          allDay: false,
+          tipo: 'reservado',
+          id: `${anio}-${mes}-${dia}-${hIni}-${mIni}`
+        });
+      });
+
+    promises.push(prom);
+  });
+});
+
 
         await Promise.all(promises);
         setEventos(nuevosEventos);

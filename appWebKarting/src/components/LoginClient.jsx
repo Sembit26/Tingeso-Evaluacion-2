@@ -7,12 +7,12 @@ const LoginClient = () => {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
-  const [contrasenia, setContrasenia] = useState('');
+  const [contrasena, setContrasenia] = useState('');
   const [error, setError] = useState(null);
 
   const handleLogin = async () => {
     try {
-      const response = await clientService.loginClient({ email, contrasenia });
+      const response = await clientService.loginClient({ email, contrasena });
       sessionStorage.setItem('cliente', JSON.stringify(response.data));
       navigate('/horariosDisponibles');
     } catch (err) {
@@ -53,7 +53,7 @@ const LoginClient = () => {
           type="password"
           required
           fullWidth
-          value={contrasenia}
+          value={contrasena}
           onChange={(e) => setContrasenia(e.target.value)}
           margin="normal"
         />

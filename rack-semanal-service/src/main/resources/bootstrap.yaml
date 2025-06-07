@@ -8,7 +8,7 @@ spring:
       uri: http://localhost:8081
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/bdmicroservicios
+    url: jdbc:postgresql://localhost:5432/rack_semanal
     username: postgres
     password: holamundo
 

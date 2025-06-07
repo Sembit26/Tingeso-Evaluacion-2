@@ -86,11 +86,9 @@ public class UsuarioController {
     }
 
     @PostMapping("/generarReservaAdmin")
-    public ResponseEntity<Reserva> crearReservaAdmin(
-            @RequestParam String correoCliente,
-            @RequestBody Reserva reserva) {
+    public ResponseEntity<Reserva> crearReservaAdmin(@RequestBody Reserva reserva) {
         try {
-            Reserva reservaCreada = usuarioService.generarReservaAdmin(correoCliente, reserva);
+            Reserva reservaCreada = usuarioService.generarReservaAdmin(reserva.getCorreoCliente(), reserva);
             return ResponseEntity.ok(reservaCreada);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -90,4 +90,32 @@ public class ReservaController {
         return reservaService.obtenerTarifaParaDiasEspeciales(numVueltas, cantidadCumpleaneros);
     }
 
+    @GetMapping("/getInfoReserva/{id}")
+    public ResponseEntity<String> obtenerInformacionReserva(@PathVariable int id) {
+        Optional<Reserva> reservaOptional = reservaService.getReservaById(id);
+        if (reservaOptional.isPresent()) {
+            Reserva reserva = reservaOptional.get();
+            String informacionReserva = reservaService.obtenerInformacionReservaConComprobante(reserva);
+            return ResponseEntity.ok(informacionReserva);
+        } else {
+            return ResponseEntity.notFound().build();  // Retorna 404 si no se encuentra la reserva
+        }
+    }
+
+    /**
+     * Actualizar una reserva existente por ID.
+     */
+    @PutMapping("/updateReservaById/{id}")
+    public Reserva updateReserva(@PathVariable int id, @RequestBody Reserva updatedReserva) {
+        return reservaService.updateReserva(id, updatedReserva);
+    }
+
+    /**
+     * Eliminar una reserva por ID.
+     */
+    @DeleteMapping("/deleteReservaById/{id}")
+    public void deleteReserva(@PathVariable int id) {
+        reservaService.deleteReserva(id);
+    }
+
 }

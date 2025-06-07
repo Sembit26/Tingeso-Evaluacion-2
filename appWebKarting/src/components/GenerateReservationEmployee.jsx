@@ -12,7 +12,6 @@ const GenerateReservationEmployee = () => {
   const location = useLocation();
 
   // Datos del cliente
-  const [nombreCliente, setNombreCliente] = useState('');
   const [correoCliente, setCorreoCliente] = useState('');
 
   // Datos de la reserva
@@ -63,13 +62,14 @@ const GenerateReservationEmployee = () => {
 
   const handleGenerarReserva = async () => {
     try {
-      if (!nombreCliente || !correoCliente || !numVueltasTiempoMaximo || !numPersonas || !fechaInicio || !horaInicio) {
+      if (!correoCliente || !numVueltasTiempoMaximo || !numPersonas || !fechaInicio || !horaInicio) {
         setError("Todos los campos son obligatorios.");
         return;
       }
 
-      const data = {
-        nombreCliente,
+      // Verificamos datos ingresados
+      console.log("Datos del formulario:");
+      console.log({
         correoCliente,
         numVueltasTiempoMaximo,
         numPersonas,
@@ -78,6 +78,23 @@ const GenerateReservationEmployee = () => {
         cumpleaneros,
         nombres,
         correos,
+      });
+
+      const nombreCorreo = {};
+      for (let i = 0; i < nombres.length; i++) {
+        if (nombres[i] && correos[i]) {
+          nombreCorreo[nombres[i]] = correos[i]; // Los nombres repetidos sobreescriben el anterior
+        }
+      }
+
+      const data = {
+        correoCliente,
+        numVueltasTiempoMaximo,
+        numPersonas,
+        fechaInicio,
+        horaInicio,
+        nombreCorreo: nombreCorreo,
+        correosCumpleaneros: cumpleaneros,
       };
 
       console.log("Enviando datos:", data);
@@ -111,14 +128,7 @@ const GenerateReservationEmployee = () => {
         <Grid item xs={12}>
           <Paper elevation={3} style={{ padding: '2rem' }}>
             <Box component="form" onSubmit={(e) => e.preventDefault()}>
-              <TextField
-                label="Nombre del Cliente"
-                required
-                fullWidth
-                value={nombreCliente}
-                onChange={(e) => setNombreCliente(e.target.value)}
-                margin="normal"
-              />
+            
               <TextField
                 label="Correo del Cliente"
                 required

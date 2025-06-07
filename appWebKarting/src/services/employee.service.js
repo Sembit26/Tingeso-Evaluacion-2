@@ -1,6 +1,6 @@
 import httClient from "../http-common";
 
-const EMPLEADO_API_URL = "/api/empleados"
+const EMPLEADO_API_URL = "/api/usuarios"
 
 
 const loginEmployee = (data) => {
@@ -8,7 +8,7 @@ const loginEmployee = (data) => {
 };
 
 const generarReservaEmpleado = (data) => {
-    return httClient.post(`${EMPLEADO_API_URL}/generarReservaEmpleado`, data)
+    return httClient.post(`${EMPLEADO_API_URL}/generarReservaAdmin`, data)
 }
 
 export default { loginEmployee, generarReservaEmpleado };

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import reservaService from "../services/reservation.service";
 import HamburgerMenu from "../components/HamburgerMenu"; // Importar el HamburgerMenu
+import reportesService from "../services/reportes.service";
 
 // Función para mapear el número del mes al nombre del mes
 const monthNames = [
@@ -28,7 +29,7 @@ const ReportIncomePerPerson = () => {
       return;
     }
     try {
-      const response = await reservaService.obtenerIngresosPorPersonas(fechaInicio, fechaFin);
+      const response = await reportesService.obtenerIngresosPorPersonas(fechaInicio, fechaFin);
       setIngresos(response.data); // Guardamos los datos en el estado
       setError(null); // Limpiamos cualquier error previo
     } catch (err) {
